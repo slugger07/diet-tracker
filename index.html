@@ -244,27 +244,54 @@
         // API HELPER FUNCTIONS
         // ============================================
         
-        async function apiCall(endpoint, data = {}) {
-            try {
-                const response = await fetch(`${API_BASE_URL}?action=${endpoint}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+async function apiCall(endpoint, data = {}) {
+    return new Promise((resolve, reject) => {
+        // Create unique callback name
+        const callbackName = 'jsonp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        // Build parameters
+        const params = new URLSearchParams({
+            action: endpoint,
+            callback: callbackName
+        });
+        
+        // Add data parameters
+        Object.keys(data).forEach(key => {
+            if (data[key] !== undefined && data[key] !== null) {
+                if (typeof data[key] === 'object') {
+                    params.append(key, JSON.stringify(data[key]));
+                } else {
+                    params.append(key, data[key]);
                 }
-                
-                const result = await response.json();
-                return result;
-            } catch (error) {
-                console.error('API call error:', error);
-                throw error;
             }
-        }
+        });
+        
+        // Create global callback function
+        window[callbackName] = function(result) {
+            // Cleanup
+            delete window[callbackName];
+            document.body.removeChild(script);
+            
+            // Resolve promise
+            resolve(result);
+        };
+        
+        // Create and inject script tag
+        const script = document.createElement('script');
+        script.src = `${API_BASE_URL}?${params}`;
+        script.onerror = () => {
+            // Cleanup on error
+            delete window[callbackName];
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+            reject(new Error('JSONP request failed'));
+        };
+        
+        // Add to page
+        document.body.appendChild(script);
+    });
+}
 
         // ============================================
         // STATE
