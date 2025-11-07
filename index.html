@@ -238,8 +238,7 @@
         // ============================================
         // CONFIGURATION - UPDATE THIS WITH YOUR API URL
         // ============================================
-        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxyA-PhriXZMYOnjSz8nskmz6bpuAbSMatu-CNZzdchcWsJGAqnfDeMr9VSWAp6vPtaRw/exec'; 
-        
+        const API_BASE_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjxIaVP0vcRHMr7msOFYcfJh5N4eU5grI-iAmFeEpesbEGiueah-9c6cl4YXtPULBVdPgcl6oYf5i5T01RiIn846gBzHC3PSX4Tt25rswSvUvROhDv6tWGIJRJgNwiBKNgbGBimZA1D4rlM-OINg3sNW9OF40rJanYAIdDMsIqSj-3ifzO-Ig0lEat-nzhgEjCpYyr3yy_r4FcbVPKM9JPw3whBN_yx4Paj9TxaSSC68FjSdjpDYUHjDug-dqojSmgkDmWzhc37FY0ojT9yAhk6SkN7hAMZAdgk9hSMqCUZnzgqEkAMTPpBl5bc7S7QoMQV5XsG3KMFgQ_95oo&lib=MpKR4O8ou-j7ROQJncagvJBb07ss2X-gA';        
         // ============================================
         // API HELPER FUNCTIONS
         // ============================================
@@ -278,7 +277,7 @@ async function apiCall(endpoint, data = {}) {
         
         // Create and inject script tag
         const script = document.createElement('script');
-        script.src = `${API_BASE_URL}?${params}`;
+        script.src = `${API_BASE_URL}&${params}`;
         script.onerror = () => {
             // Cleanup on error
             delete window[callbackName];
