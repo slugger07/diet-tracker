@@ -1,0 +1,30 @@
+services:
+  nutrilog:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nutrilog-app
+    ports:
+      - "8501:8501"
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+    volumes:
+      - nutrilog-data:/app/data
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: nutrilog-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ${HOME}/.ollama:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  nutrilog-data:

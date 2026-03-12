@@ -1,0 +1,10 @@
+.env
+*.db
+nutrilog-india.tar.gz
+__pycache__/
+.venv/
+venv/
+.DS_Store
+*.pyc
+.pytest_cache/
+.mypy_cache/
